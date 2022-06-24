@@ -1,0 +1,37 @@
+package com.exercise.services;
+
+import com.exercise.dto.EmployeeDTO;
+import com.exercise.entity.Employee;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface EmployeeService {
+
+    List<EmployeeDTO> findAll();
+
+    Page<EmployeeDTO> findAllEmployeeWithPage(Integer page);
+
+    EmployeeDTO findEmployeeById(Integer id);
+
+    String deleteById(Integer employeeId);
+
+    void deleteAllById(Iterable<? extends Integer> integers);
+
+    EmployeeDTO saveEmployee(EmployeeDTO employee);
+
+    List<Employee> findByPhone(String phone);
+
+    <S extends Employee> S save(S entity);
+
+    List<EmployeeDTO> findEmployeeByNameContaining(String name);
+
+    EmployeeDTO updateEmployee(EmployeeDTO employeeDTO) throws Exception;
+
+    String saveImage(MultipartFile file, Integer employeeId) throws Exception;
+
+    Integer deleteMultipleEmployees(List<Integer> ids);
+}
