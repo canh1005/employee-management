@@ -21,7 +21,7 @@ public class TeamController {
             return ResponseEntity.ok().body(new ResponseObject("OK", "Get list team success!", teamService.findAllTeam()));
 
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ResponseObject("Failed", "Get list team failed!" + e.getMessage(), null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject("Failed", "Get list team failed!" + e.getMessage(), null));
 
         }
     }
@@ -42,7 +42,7 @@ public class TeamController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Employee has been insert!", teamService.addTeam(newTeamDTO)));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject("Failed", "Employee has been failed to insert!" + e.getMessage(), null));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject("Failed", e.getMessage(), null));
         }
     }
 }

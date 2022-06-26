@@ -1,6 +1,8 @@
 package com.exercise.services.impl;
 
+import com.exercise.dto.AdvanceDTO;
 import com.exercise.dto.WorkingDTO;
+import com.exercise.entity.Advances;
 import com.exercise.entity.Employee;
 import com.exercise.entity.Working;
 import com.exercise.repository.EmployeeRepository;
@@ -11,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -94,5 +97,16 @@ public class WorkingServiceImpl implements WorkingService {
         }
         return workingDTOS;
     }
+    @Override
+    public Page<WorkingDTO> findAdvancesWithPagination(Integer employeeId, Integer page) throws Exception{
+        boolean working = workingRepository.existsByEmployeeId(employeeId);
+        Integer pageSize = 5;
+        if(working){
+            Page<Working> listOfWorking = workingRepository.findAllByEmployeeId(employeeId, PageRequest.of(page, pageSize));
+            return listOfWorking.map(workingItem -> mapper.map(workingItem,WorkingDTO.class));
+        }
+        throw new Exception("Employee NOT_FOUND!");
+    }
+
 
 }

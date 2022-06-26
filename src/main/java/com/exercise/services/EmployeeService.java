@@ -15,11 +15,10 @@ public interface EmployeeService {
 
     Page<EmployeeDTO> findAllEmployeeWithPage(Integer page);
 
-    EmployeeDTO findEmployeeById(Integer id);
+    EmployeeDTO findEmployeeById(Integer id) throws Exception;
 
     String deleteById(Integer employeeId);
 
-    void deleteAllById(Iterable<? extends Integer> integers);
 
     EmployeeDTO saveEmployee(EmployeeDTO employee);
 
@@ -28,6 +27,8 @@ public interface EmployeeService {
     <S extends Employee> S save(S entity);
 
     List<EmployeeDTO> findEmployeeByNameContaining(String name);
+
+    Page<EmployeeDTO> findEmployeeByNameWithPage(String name, Integer page) throws Exception;
 
     EmployeeDTO updateEmployee(EmployeeDTO employeeDTO) throws Exception;
 

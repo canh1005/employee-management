@@ -22,7 +22,15 @@ public class AdvanceController {
         try {
             return ResponseEntity.ok().body(new ResponseObject("OK", "Get list advance success!", advanceService.findAllAdvanceByEmployeeId(id)));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ResponseObject("OK", "Get list advance failed!", null));
+            return ResponseEntity.badRequest().body(new ResponseObject("Failed", e.getMessage(), null));
+        }
+    }
+    @GetMapping("/getPage")
+    ResponseEntity<ResponseObject> getAllAdvanceWithPagination(@RequestParam(value = "employee_id") Integer id,@RequestParam(value = "page") Integer page) {
+        try {
+            return ResponseEntity.ok().body(new ResponseObject("OK", "Get list advance success!", advanceService.findAdvancesWithPagination(id,page)));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ResponseObject("Failed", e.getMessage(), null));
         }
     }
 
@@ -31,7 +39,7 @@ public class AdvanceController {
         try {
             return ResponseEntity.ok().body(new ResponseObject("OK", "Advance has been inserted!", advanceService.addAdvance(advanceDTO)));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ResponseObject("Failed", "Failed to insert!" + e.getMessage(), null));
+            return ResponseEntity.badRequest().body(new ResponseObject("Failed",   e.getMessage(), null));
         }
     }
 
@@ -40,7 +48,7 @@ public class AdvanceController {
         try {
             return ResponseEntity.ok().body(new ResponseObject("OK", "Advance has been deleted!", advanceService.deleteAdvance(advanceID)));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ResponseObject("Failed", "Failed to deleted!" + e.getMessage(), null));
+            return ResponseEntity.badRequest().body(new ResponseObject("Failed",  e.getMessage(), null));
         }
     }
 }

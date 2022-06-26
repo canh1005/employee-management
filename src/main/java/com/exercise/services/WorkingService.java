@@ -1,5 +1,6 @@
 package com.exercise.services;
 
+import com.exercise.dto.AdvanceDTO;
 import com.exercise.dto.WorkingDTO;
 import com.exercise.entity.Working;
 import org.springframework.data.domain.Page;
@@ -21,4 +22,6 @@ public interface WorkingService {
 
 
     List<WorkingDTO> getWorkingDTOByEmployeeID(Integer employeeID);
+
+    Page<WorkingDTO> findAdvancesWithPagination(Integer employeeId, Integer page) throws Exception;
 }

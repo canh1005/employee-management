@@ -2,7 +2,11 @@ package com.exercise.repository;
 
 import com.exercise.dto.AdvanceDTO;
 import com.exercise.entity.Advances;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -16,7 +20,11 @@ public interface AdvanceRepository extends JpaRepository<Advances, Integer> {
     List<Advances> findByEmployeeId(Integer employeeId);
 
     List<Advances> findByDate(Date date);
-
+    Page<Advances> findAllByEmployeeId(Integer employeeId, Pageable of);
     @Transactional
     void deleteByEmployeeId(Integer employeeID);
+
+    @Modifying
+    @Query(value = "delete from advances where advances.employee_id in ?1", nativeQuery = true)
+    Integer deleteMultipleEmployeesWithIds(List<Integer> ids);
 }

@@ -21,7 +21,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,14 +58,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public EmployeeDTO findEmployeeById(Integer id) {
+    public EmployeeDTO findEmployeeById(Integer id) throws Exception {
         Optional<Employee> employeeEntity = employeeRepository.findById(id);
-        logger.info("Employee" + employeeEntity);
+        logger.info("EmployeeEntity: " + employeeEntity);
         if (employeeEntity.isPresent()) {
             EmployeeDTO employeeDTO = mapper.map(employeeEntity, EmployeeDTO.class);
+            logger.info("Employee: " + employeeDTO);
             return employeeDTO;
         } else {
-            return null;
+            throw new Exception("Employee NOT_FOUND!");
         }
     }
 
@@ -88,12 +88,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         } else {
             return "Eployee NOT_FOUND!";
         }
-    }
-
-    @Override
-    public void deleteAllById(Iterable<? extends Integer> integers) {
-
-        employeeRepository.deleteAllById(integers);
     }
 
     @Override
@@ -125,6 +119,19 @@ public class EmployeeServiceImpl implements EmployeeService {
             return listOfEmployeeDTO;
         } else {
             return this.findAll();
+        }
+    }
+    @Override
+    public Page<EmployeeDTO> findEmployeeByNameWithPage(String name, Integer page)throws Exception{
+        if(name != ""){
+            Integer pageSize = 5;
+            Page<Employee> listOfEmployee = employeeRepository.findByFullNameContaining(name, PageRequest.of(page,pageSize));
+            if (listOfEmployee.getContent().isEmpty()) {
+                throw new Exception("No employeee found with: " + name);
+            }
+            return listOfEmployee.map(employee -> mapper.map(employee,EmployeeDTO.class));
+        }else{
+            return this.findAllEmployeeWithPage(page);
         }
     }
 
@@ -166,6 +173,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public Integer deleteMultipleEmployees(List<Integer> ids) {
+        List<Working> working = workingRepository.findAllById(ids);
+        List<Advances> advances = advanceRepository.findAllById(ids);
+        if(working.size() > 0 || advances.size() > 0){
+            workingRepository.deleteMultipleEmployeesWithIds(ids);
+            logger.info("delete working susscess: ");
+            advanceRepository.deleteMultipleEmployeesWithIds(ids);
+            logger.info("delete advances susscess: ");
+        }
         employeeRepository.deleteMultipleEmployeesWithIds(ids);
         return 1;
     }

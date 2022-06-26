@@ -3,7 +3,6 @@ package com.exercise.services.impl;
 import com.exercise.dto.AdvanceDTO;
 import com.exercise.entity.Advances;
 import com.exercise.entity.Employee;
-import com.exercise.entity.Working;
 import com.exercise.repository.AdvanceRepository;
 import com.exercise.repository.EmployeeRepository;
 import com.exercise.services.AdvanceService;
@@ -11,8 +10,11 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -81,6 +83,17 @@ public class AdvanceServiceImpl implements AdvanceService {
             listOfAdvanceDTO.add(advanceDTO);
         }
         return listOfAdvanceDTO;
+    }
+
+    @Override
+    public Page<AdvanceDTO> findAdvancesWithPagination(Integer employeeId, Integer page) throws Exception{
+        boolean advance = advanceRepository.existsByEmployeeId(employeeId);
+        Integer pageSize = 5;
+        if(advance){
+            Page<Advances> listOfAdvances = advanceRepository.findAllByEmployeeId(employeeId, PageRequest.of(page, pageSize));
+            return listOfAdvances.map(advances -> mapper.map(advances,AdvanceDTO.class));
+        }
+        throw new Exception("Employee NOT_FOUND!");
     }
 
 }

@@ -25,8 +25,7 @@ public class WorkingController {
 
     @Autowired
     private WorkingService workingService;
-    @Autowired
-    private EmployeeService employeeService;
+
     @Autowired
     private StatisticService statisticService;
 
@@ -35,17 +34,24 @@ public class WorkingController {
         try {
             return ResponseEntity.ok().body(new ResponseObject("Ok", "Get Working Success!", workingService.getWorkingDTOByEmployeeID(id)));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ResponseObject("Failed", "Get Working Failed!" + e.getMessage(), null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject("Failed",  e.getMessage(), null));
         }
 
     }
-
+    @GetMapping("/getPage")
+    ResponseEntity<ResponseObject> getAllWorkingWithPagination(@RequestParam(value = "employee_id") Integer id,@RequestParam(value = "page") Integer page) {
+        try {
+            return ResponseEntity.ok().body(new ResponseObject("OK", "Get list advance success!", workingService.findAdvancesWithPagination(id,page)));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject("Failed", e.getMessage(), null));
+        }
+    }
     @PostMapping("/create")
     ResponseEntity<ResponseObject> createNewWorking(@RequestBody WorkingDTO workingDTO) {
         try {
             return ResponseEntity.ok().body(new ResponseObject("Ok", "Get Working Success!", workingService.addWorking(workingDTO)));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ResponseObject("Failed", "Get Working Failed!" + e.getMessage(), null));
+            return ResponseEntity.badRequest().body(new ResponseObject("Failed",  e.getMessage(), null));
         }
     }
 
