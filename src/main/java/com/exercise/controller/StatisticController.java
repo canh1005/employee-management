@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.YearMonth;
+
 @RestController
 @RequestMapping("/api/statistic")
 public class StatisticController {
@@ -17,9 +19,9 @@ public class StatisticController {
     private StatisticService statisticService;
 
     @GetMapping("")
-    public ResponseEntity<ResponseObject> getStatistic(@RequestParam(value = "employee_id") Integer employeeId) {
+    public ResponseEntity<ResponseObject> getStatistic(@RequestParam(value = "employee_id") Integer employeeId, @RequestParam("year_month")YearMonth yearMonth) {
         try {
-            return ResponseEntity.ok().body(new ResponseObject("Ok", "Get Statistic Success!", statisticService.getTotalSalary(employeeId)));
+            return ResponseEntity.ok().body(new ResponseObject("Ok", "Get Statistic Success!", statisticService.getTotalSalary(employeeId,yearMonth)));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject("Failed", e.getMessage(), null));
         }

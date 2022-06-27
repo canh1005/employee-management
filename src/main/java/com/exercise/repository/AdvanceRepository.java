@@ -31,6 +31,6 @@ public interface AdvanceRepository extends JpaRepository<Advances, Integer> {
     @Query(value = "delete from advances where advances.employee_id in ?1", nativeQuery = true)
     Integer deleteMultipleEmployeesWithIds(List<Integer> ids);
 
-    @Query(value = "SELECT sum(money) FROM employee_db.advances where advances.employee_id=?1 and date between ?1 and ?2 ", nativeQuery = true)
+    @Query(value = "SELECT sum(money) FROM employee_db.advances where advances.employee_id=?1 and date between ?2 and ?3 ", nativeQuery = true)
     Double totalAdvancesMoney(Integer employeeId, LocalDate startDay, LocalDate endDay);
 }

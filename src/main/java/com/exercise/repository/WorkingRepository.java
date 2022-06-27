@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -29,10 +30,10 @@ public interface WorkingRepository extends JpaRepository<Working, Integer> {
 
     Page<Working> findAllByEmployeeId(Integer employeeId, Pageable of);
 
-    @Query(value = "select COUNT(date) from working where employee_id=?1 and date between ?1 and ?2", nativeQuery = true)
+    @Query(value = "select COUNT(date) from working where employee_id=?1 and date between ?2 and ?3", nativeQuery = true)
     Integer countDayOfWork(Integer employeeId, LocalDate startDay, LocalDate endDay);
 
-    @Query(value = "SELECT sum(hour) * money_per_hour FROM employee_db.working inner join employee_db.employees on working.employee_id = employees.employee_id where working.employee_id=?1 and date between ?1 and ?2 ;", nativeQuery = true)
+    @Query(value = "SELECT sum(hour) * money_per_hour FROM employee_db.working inner join employee_db.employees on working.employee_id = employees.employee_id where working.employee_id=?1 and date between ?2 and ?3 ;", nativeQuery = true)
     Double totalGet(Integer employeeId, LocalDate startDay, LocalDate endDay);
 
     @Modifying

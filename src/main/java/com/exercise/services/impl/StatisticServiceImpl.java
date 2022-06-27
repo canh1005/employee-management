@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.Date;
 
 @Service
 public class StatisticServiceImpl implements com.exercise.services.StatisticService {
@@ -20,15 +22,28 @@ public class StatisticServiceImpl implements com.exercise.services.StatisticServ
 
 
     @Override
-    public Statistic getTotalSalary(Integer employeeId) {
+    public Statistic getTotalSalary(Integer employeeId, YearMonth yearMonth) {
         Statistic statistic = new Statistic();
-        LocalDate currentDate = LocalDate.now();
-        LocalDate startDay = currentDate.withDayOfMonth(1);
-        LocalDate endDay = currentDate.withDayOfMonth(30);
-        Integer count = workingRepository.countDayOfWork(employeeId, startDay, endDay);
-        Double totalGet = workingRepository.totalGet(employeeId, startDay, endDay);
-        Double totalAdvancesMoney = advanceRepository.totalAdvancesMoney(employeeId, startDay, endDay);
-        Double totalSalary = totalGet - totalAdvancesMoney;
+        Double totalSalary = 0.0;
+        Double totalGet = 0.0;
+        Double totalAdvancesMoney = 0.0;
+        YearMonth month = yearMonth;
+        LocalDate startOfMonth = month.atDay(1);
+        LocalDate endOfMonth = month.atEndOfMonth();
+        Integer count = workingRepository.countDayOfWork(employeeId, startOfMonth, endOfMonth);
+        totalGet = workingRepository.totalGet(employeeId, startOfMonth, endOfMonth);
+        totalAdvancesMoney = advanceRepository.totalAdvancesMoney(employeeId, startOfMonth, endOfMonth);
+        if(totalAdvancesMoney != null){
+            totalSalary = totalGet - totalAdvancesMoney;
+        }
+        else{
+            totalSalary = totalGet;
+            totalAdvancesMoney = 0.0;
+        }
+        logger.info("month: " + month);
+        logger.info("startOfMonth: " + startOfMonth);
+        logger.info("endOfMonth: " + endOfMonth);
+
         logger.info("Count: " + count);
         logger.info("totalGet: " + totalGet);
         logger.info("totalAdvancesMoney: " + totalAdvancesMoney);

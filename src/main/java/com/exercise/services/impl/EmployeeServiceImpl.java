@@ -169,13 +169,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public String saveImage(MultipartFile file, Integer employeeId) throws Exception {
         Optional<Employee> employee = employeeRepository.findById(employeeId);
-
         if (employee.isPresent()) {
             AvatarUpload avatarUpload = new AvatarUpload();
             avatarUpload.setFile(file);
             this.uploadAvatarThumbnail(employee.get(), avatarUpload);
             employeeRepository.save(employee.get());
-            return "save success";
+            return "Upload Success";
         } else {
             throw new Exception("Employee NOT_FOUND!");
         }
