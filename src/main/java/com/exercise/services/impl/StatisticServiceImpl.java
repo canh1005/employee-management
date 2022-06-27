@@ -1,5 +1,7 @@
 package com.exercise.services.impl;
 
+import com.exercise.entity.Statistic;
+import com.exercise.repository.AdvanceRepository;
 import com.exercise.repository.WorkingRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,17 +15,30 @@ public class StatisticServiceImpl implements com.exercise.services.StatisticServ
     private final static Logger logger = LoggerFactory.getLogger(StatisticServiceImpl.class);
     @Autowired
     private WorkingRepository workingRepository;
+    @Autowired
+    private AdvanceRepository advanceRepository;
 
-    //    public Statistic getStatistic(Integer employeeId) {
-//        return 1;
-//    }
+
     @Override
-    public Integer countDate() {
-        LocalDate startDay = LocalDate.of(2022, 06, 10);
-        LocalDate endDay = LocalDate.of(2022, 06, 30);
-        Integer count = workingRepository.countDayOfWork(3, startDay, endDay);
+    public Statistic getTotalSalary(Integer employeeId) {
+        Statistic statistic = new Statistic();
+        LocalDate currentDate = LocalDate.now();
+        LocalDate startDay = currentDate.withDayOfMonth(1);
+        LocalDate endDay = currentDate.withDayOfMonth(30);
+        Integer count = workingRepository.countDayOfWork(employeeId, startDay, endDay);
+        Double totalGet = workingRepository.totalGet(employeeId, startDay, endDay);
+        Double totalAdvancesMoney = advanceRepository.totalAdvancesMoney(employeeId, startDay, endDay);
+        Double totalSalary = totalGet - totalAdvancesMoney;
         logger.info("Count: " + count);
-        return 1;
+        logger.info("totalGet: " + totalGet);
+        logger.info("totalAdvancesMoney: " + totalAdvancesMoney);
+        logger.info("totalAdvancesMoney: " + totalSalary);
+        statistic.setNumberOfWorkingDay(count);
+        statistic.setTotalGet(totalGet);
+        statistic.setTotalAdvances(totalAdvancesMoney);
+        statistic.setTotalSalary(totalSalary);
+        logger.info("Statistics: " + statistic);
+        return statistic;
     }
 
 }

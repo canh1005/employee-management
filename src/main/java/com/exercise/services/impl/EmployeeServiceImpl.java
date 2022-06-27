@@ -1,7 +1,10 @@
 package com.exercise.services.impl;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.exercise.dto.EmployeeDTO;
 import com.exercise.entity.Advances;
+import com.exercise.entity.AvatarUpload;
 import com.exercise.entity.Employee;
 import com.exercise.entity.Working;
 import com.exercise.repository.AdvanceRepository;
@@ -17,11 +20,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -37,6 +42,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     private WorkingRepository workingRepository;
     @Autowired
     private AdvanceRepository advanceRepository;
+
+    private final Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+            "cloud_name", "cncloud",
+            "api_key", "885459265841563",
+            "api_secret", "InwTu_XGPh8cg8GWT9DsMOrni3M"));
 
     @Override
     public List<EmployeeDTO> findAll() {
@@ -62,7 +72,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Optional<Employee> employeeEntity = employeeRepository.findById(id);
         logger.info("EmployeeEntity: " + employeeEntity);
         if (employeeEntity.isPresent()) {
-            EmployeeDTO employeeDTO = mapper.map(employeeEntity, EmployeeDTO.class);
+            EmployeeDTO employeeDTO = mapper.map(employeeEntity.get(), EmployeeDTO.class);
             logger.info("Employee: " + employeeDTO);
             return employeeDTO;
         } else {
@@ -121,16 +131,17 @@ public class EmployeeServiceImpl implements EmployeeService {
             return this.findAll();
         }
     }
+
     @Override
-    public Page<EmployeeDTO> findEmployeeByNameWithPage(String name, Integer page)throws Exception{
-        if(name != ""){
+    public Page<EmployeeDTO> findEmployeeByNameWithPage(String name, Integer page) throws Exception {
+        if (name != "") {
             Integer pageSize = 5;
-            Page<Employee> listOfEmployee = employeeRepository.findByFullNameContaining(name, PageRequest.of(page,pageSize));
+            Page<Employee> listOfEmployee = employeeRepository.findByFullNameContaining(name, PageRequest.of(page, pageSize));
             if (listOfEmployee.getContent().isEmpty()) {
                 throw new Exception("No employeee found with: " + name);
             }
-            return listOfEmployee.map(employee -> mapper.map(employee,EmployeeDTO.class));
-        }else{
+            return listOfEmployee.map(employee -> mapper.map(employee, EmployeeDTO.class));
+        } else {
             return this.findAllEmployeeWithPage(page);
         }
     }
@@ -160,9 +171,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         Optional<Employee> employee = employeeRepository.findById(employeeId);
 
         if (employee.isPresent()) {
-            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-            employee.get().setData(file.getBytes());
-            employee.get().setImgName(fileName);
+            AvatarUpload avatarUpload = new AvatarUpload();
+            avatarUpload.setFile(file);
+            this.uploadAvatarThumbnail(employee.get(), avatarUpload);
             employeeRepository.save(employee.get());
             return "save success";
         } else {
@@ -175,7 +186,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Integer deleteMultipleEmployees(List<Integer> ids) {
         List<Working> working = workingRepository.findAllById(ids);
         List<Advances> advances = advanceRepository.findAllById(ids);
-        if(working.size() > 0 || advances.size() > 0){
+        if (working.size() > 0 || advances.size() > 0) {
             workingRepository.deleteMultipleEmployeesWithIds(ids);
             logger.info("delete working susscess: ");
             advanceRepository.deleteMultipleEmployeesWithIds(ids);
@@ -184,4 +195,42 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeRepository.deleteMultipleEmployeesWithIds(ids);
         return 1;
     }
+
+    @Override
+    public Page<EmployeeDTO> findAllEmployeesByTeamID(Integer teamID, Integer page) {
+        Integer pageSize = 5;
+        Page<Employee> listEmployee = employeeRepository.findAllEmployeesByTeamId(teamID, PageRequest.of(page, pageSize));
+        logger.info("listEmployee: " + listEmployee);
+        return listEmployee.map(employee -> mapper.map(employee, EmployeeDTO.class));
+    }
+
+    @Override
+    public Employee uploadAvatarThumbnail(Employee employee, @ModelAttribute AvatarUpload avatarThumbnailUpload) throws IOException {
+        Map uploadResult = null;
+
+        if (avatarThumbnailUpload.getFile() != null && !avatarThumbnailUpload.getFile().isEmpty()) {
+            uploadResult = cloudinary.uploader().upload(avatarThumbnailUpload.getFile().getBytes(),
+                    ObjectUtils.asMap("resource_type", "auto", "folder", "/avatar"));
+            avatarThumbnailUpload.setPublicId((String) uploadResult.get("public_id"));
+            Object version = uploadResult.get("version");
+
+            logger.info("Upload source success: " + uploadResult);
+
+            if (version instanceof Integer) {
+                avatarThumbnailUpload.setVersion(Long.valueOf(((Integer) version)));
+            } else {
+                avatarThumbnailUpload.setVersion((Long) version);
+            }
+
+            avatarThumbnailUpload.setSignature((String) uploadResult.get("signature"));
+            avatarThumbnailUpload.setFormat((String) uploadResult.get("format"));
+            avatarThumbnailUpload.setResourceType((String) uploadResult.get("resource_type"));
+        }
+
+        String avatarThumbUrl = avatarThumbnailUpload.getUrl(cloudinary);
+        employee.setImgName(avatarThumbUrl);
+
+        return employee;
+    }
+
 }

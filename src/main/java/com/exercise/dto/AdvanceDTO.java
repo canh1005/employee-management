@@ -17,7 +17,7 @@ public class AdvanceDTO {
     private Integer id;
     private Date date;
     //    private AdvanceID id;
-    private Double hour;
+    private Double money;
     //    private Employee employee;
 
 

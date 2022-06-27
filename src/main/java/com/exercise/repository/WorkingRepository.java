@@ -31,6 +31,10 @@ public interface WorkingRepository extends JpaRepository<Working, Integer> {
 
     @Query(value = "select COUNT(date) from working where employee_id=?1 and date between ?1 and ?2", nativeQuery = true)
     Integer countDayOfWork(Integer employeeId, LocalDate startDay, LocalDate endDay);
+
+    @Query(value = "SELECT sum(hour) * money_per_hour FROM employee_db.working inner join employee_db.employees on working.employee_id = employees.employee_id where working.employee_id=?1 and date between ?1 and ?2 ;", nativeQuery = true)
+    Double totalGet(Integer employeeId, LocalDate startDay, LocalDate endDay);
+
     @Modifying
     @Query(value = "delete from working where working.employee_id in ?1", nativeQuery = true)
     Integer deleteMultipleEmployeesWithIds(List<Integer> ids);

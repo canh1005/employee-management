@@ -18,7 +18,7 @@ public class Advances {
     @Column(name = "advance_id")
     private Integer id;
 
-    private Double hour;
+    private Double money;
 
 //    @EmbeddedId
 //    private AdvanceID id;

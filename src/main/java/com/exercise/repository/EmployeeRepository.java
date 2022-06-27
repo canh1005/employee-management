@@ -14,8 +14,12 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     List<Employee> findByPhone(String phone);
 
     List<Employee> findByFullNameContaining(String fullName);
+
     Page<Employee> findByFullNameContaining(String fullName, Pageable of);
+
     @Modifying
     @Query(value = "delete from employees e where e.employee_id in ?1", nativeQuery = true)
     Integer deleteMultipleEmployeesWithIds(List<Integer> ids);
+
+    Page<Employee> findAllEmployeesByTeamId(Integer teamID, Pageable of);
 }

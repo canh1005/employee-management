@@ -38,8 +38,7 @@ public class Employee {
     private Boolean male;
 
     private String imgName;
-    @Lob
-    private byte[] data;
+    
 
     public Employee(String fullName, Integer age, String address, Double moneyPerHour, String phone, Date startDay, Boolean male, Team team) {
         this.fullName = fullName;

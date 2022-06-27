@@ -54,9 +54,9 @@ public class EmployeeController {
 
     @GetMapping("/find-by-id")
     ResponseEntity<ResponseObject> findById(@RequestParam(value = "employee_id") Integer id) {
-        try{
+        try {
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("Ok", "Employee Found!", employeeService.findEmployeeById(id)));
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject("Failed", e.getMessage(), null));
         }
     }
@@ -94,14 +94,16 @@ public class EmployeeController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject("failed", "Employee Not Found!", null));
         }
     }
+
     @GetMapping("/findByNameWithPage")
     ResponseEntity<ResponseObject> findEmployeeByNameWithPage(@RequestParam(value = "name") String name, @RequestParam(value = "page") Integer page) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("Ok", "Employee has been found!", employeeService.findEmployeeByNameWithPage(name,page)));
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("Ok", "Employee has been found!", employeeService.findEmployeeByNameWithPage(name, page)));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject("Failed", e.getMessage(), null));
         }
     }
+
     @PutMapping("/update")
     ResponseEntity<ResponseObject> updateEmployee(@RequestBody EmployeeDTO employeeDTO) {
         try {
@@ -115,6 +117,15 @@ public class EmployeeController {
     ResponseEntity<ResponseObject> deleteMultipleEmployees(@RequestParam List<Integer> ids) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Delete success!", employeeService.deleteMultipleEmployees(ids)));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject("Failed", e.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/getEmployeeByTeam")
+    ResponseEntity<ResponseObject> getEmployeeByTeam(@RequestParam(value = "team_id") Integer teamID, @RequestParam(value = "page") Integer page) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Get list employee success!", employeeService.findAllEmployeesByTeamID(teamID, page)));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject("Failed", e.getMessage(), null));
         }
