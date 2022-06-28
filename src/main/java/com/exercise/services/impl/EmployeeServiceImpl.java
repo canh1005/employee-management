@@ -3,10 +3,7 @@ package com.exercise.services.impl;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.exercise.dto.EmployeeDTO;
-import com.exercise.entity.Advances;
-import com.exercise.entity.AvatarUpload;
-import com.exercise.entity.Employee;
-import com.exercise.entity.Working;
+import com.exercise.entity.*;
 import com.exercise.repository.AdvanceRepository;
 import com.exercise.repository.EmployeeRepository;
 import com.exercise.repository.TeamRespository;
@@ -158,7 +155,8 @@ public class EmployeeServiceImpl implements EmployeeService {
             employeeEntity.get().setFullName(employeeDTO.getFullName());
             employeeEntity.get().setMale(employeeDTO.getMale());
             employeeEntity.get().setMoneyPerHour(employeeDTO.getMoneyPerHour());
-            employeeEntity.get().getTeam().setId(employeeDTO.getTeamID());
+            Optional<Team> team = teamRepository.findById(employeeDTO.getTeamID());
+            employeeEntity.get().setTeam(team.get());
             this.save(employeeEntity.get());
             return employeeDTO;
         } else {
