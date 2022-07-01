@@ -18,11 +18,11 @@ public interface AdvanceRepository extends JpaRepository<Advances, Integer> {
 
     boolean existsByEmployeeId(Integer employeeId);
 
-    List<Advances> findByEmployeeId(Integer employeeId);
+    List<Advances> findByEmployeeIdOrderByDateAsc(Integer employeeId);
 
     List<Advances> findByDate(Date date);
 
-    Page<Advances> findAllByEmployeeId(Integer employeeId, Pageable of);
+    Page<Advances> findAllByEmployeeIdOrderByDateAsc(Integer employeeId, Pageable of);
 
     @Transactional
     void deleteByEmployeeId(Integer employeeID);

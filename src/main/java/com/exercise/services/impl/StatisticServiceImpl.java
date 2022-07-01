@@ -28,15 +28,14 @@ public class StatisticServiceImpl implements com.exercise.services.StatisticServ
         Double totalGet = 0.0;
         Double totalAdvancesMoney = 0.0;
         YearMonth month = yearMonth;
-        LocalDate startOfMonth = month.atDay(1);
+        LocalDate startOfMonth = month.atDay(01);
         LocalDate endOfMonth = month.atEndOfMonth();
         Integer count = workingRepository.countDayOfWork(employeeId, startOfMonth, endOfMonth);
         totalGet = workingRepository.totalGet(employeeId, startOfMonth, endOfMonth);
         totalAdvancesMoney = advanceRepository.totalAdvancesMoney(employeeId, startOfMonth, endOfMonth);
-        if(totalAdvancesMoney != null){
+        if (totalAdvancesMoney != null) {
             totalSalary = totalGet - totalAdvancesMoney;
-        }
-        else{
+        } else {
             totalSalary = totalGet;
             totalAdvancesMoney = 0.0;
         }

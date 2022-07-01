@@ -80,8 +80,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public String deleteById(Integer employeeId) {
         Optional<Employee> employee = employeeRepository.findById(employeeId);
-        List<Working> working = workingRepository.findByEmployeeId(employeeId);
-        List<Advances> advance = advanceRepository.findByEmployeeId(employeeId);
+        List<Working> working = workingRepository.findByEmployeeIdOrderByDateAsc(employeeId);
+        List<Advances> advance = advanceRepository.findByEmployeeIdOrderByDateAsc(employeeId);
         if (employee.isPresent()) {
             logger.info("employee: " + employee.get().getId());
             if (working.size() > 0 || advance.size() > 0) {
@@ -133,7 +133,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Page<EmployeeDTO> findEmployeeByNameWithPage(String name, Integer page) throws Exception {
         if (name != "") {
             Integer pageSize = 5;
-            Page<Employee> listOfEmployee = employeeRepository.findByFullNameContaining(name, PageRequest.of(page, pageSize));
+            Page<Employee> listOfEmployee = employeeRepository.findByFullNameContainingOrderByStartDayDesc(name, PageRequest.of(page, pageSize));
             if (listOfEmployee.getContent().isEmpty()) {
                 throw new Exception("No employeee found with: " + name);
             }

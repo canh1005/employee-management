@@ -77,7 +77,7 @@ public class AdvanceServiceImpl implements AdvanceService {
     @Override
     public List<AdvanceDTO> findAllAdvanceByEmployeeId(Integer employeeId) {
         List<AdvanceDTO> listOfAdvanceDTO = new ArrayList<>();
-        for (Advances advance : advanceRepository.findByEmployeeId(employeeId)
+        for (Advances advance : advanceRepository.findByEmployeeIdOrderByDateAsc(employeeId)
         ) {
             AdvanceDTO advanceDTO = mapper.map(advance, AdvanceDTO.class);
             listOfAdvanceDTO.add(advanceDTO);
@@ -86,12 +86,12 @@ public class AdvanceServiceImpl implements AdvanceService {
     }
 
     @Override
-    public Page<AdvanceDTO> findAdvancesWithPagination(Integer employeeId, Integer page) throws Exception{
+    public Page<AdvanceDTO> findAdvancesWithPagination(Integer employeeId, Integer page) throws Exception {
         boolean advance = advanceRepository.existsByEmployeeId(employeeId);
         Integer pageSize = 5;
-        if(advance){
-            Page<Advances> listOfAdvances = advanceRepository.findAllByEmployeeId(employeeId, PageRequest.of(page, pageSize));
-            return listOfAdvances.map(advances -> mapper.map(advances,AdvanceDTO.class));
+        if (advance) {
+            Page<Advances> listOfAdvances = advanceRepository.findAllByEmployeeIdOrderByDateAsc(employeeId, PageRequest.of(page, pageSize));
+            return listOfAdvances.map(advances -> mapper.map(advances, AdvanceDTO.class));
         }
         throw new Exception("Employee NOT_FOUND!");
     }

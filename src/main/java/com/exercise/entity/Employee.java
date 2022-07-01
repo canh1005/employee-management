@@ -3,6 +3,7 @@ package com.exercise.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -31,14 +32,15 @@ public class Employee {
     private Double moneyPerHour;
     @Column(nullable = false, length = 10, unique = true)
     private String phone;
-    @JsonFormat(pattern = "dd-MM-yyyy", shape = JsonFormat.Shape.STRING)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @JsonFormat(pattern = "YYYY-MM-DD")
     @Column(nullable = false)
     private Date startDay;
     @Column(nullable = false)
     private Boolean male;
 
     private String imgName;
-    
+
 
     public Employee(String fullName, Integer age, String address, Double moneyPerHour, String phone, Date startDay, Boolean male, Team team) {
         this.fullName = fullName;

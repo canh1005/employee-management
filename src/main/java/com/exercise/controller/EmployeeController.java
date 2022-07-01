@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.sql.Savepoint;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,13 +63,13 @@ public class EmployeeController {
     }
 
     @PostMapping("/create")
-    ResponseEntity<ResponseObject> createNewEmployee(@RequestBody EmployeeDTO newEmployee) {
+    ResponseEntity<ResponseObject> createNewEmployee(@RequestBody @Valid EmployeeDTO newEmployee) {
         logger.info("Inserting ..." + newEmployee);
 
         List<Employee> foundEmployees = employeeService.findByPhone(newEmployee.getPhone().trim());
         try {
             if (foundEmployees.size() > 0) {
-                return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(new ResponseObject("failed", "Phone already existed!", null));
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject("failed", "Phone already existed!", null));
             } else {
                 return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ok", "Employee has been insert!", employeeService.saveEmployee(newEmployee)));
             }

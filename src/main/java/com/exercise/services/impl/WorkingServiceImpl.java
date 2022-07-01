@@ -79,6 +79,9 @@ public class WorkingServiceImpl implements WorkingService {
             }
 
         }
+//        if (workingRepository.existsByDateAndEmployeeId(workingDTO.getDate(), workingDTO.getEmployeeID())) {
+//            throw new Exception("Working date is exist!");
+//        }
         Working workingEntity = mapper.map(workingDTO, Working.class);
         workingRepository.save(workingEntity);
         return workingDTO;
@@ -87,7 +90,7 @@ public class WorkingServiceImpl implements WorkingService {
 
     @Override
     public List<WorkingDTO> getWorkingDTOByEmployeeID(Integer employeeID) {
-        List<Working> workings = workingRepository.findByEmployeeId(employeeID);
+        List<Working> workings = workingRepository.findByEmployeeIdOrderByDateAsc(employeeID);
         List<WorkingDTO> workingDTOS = new ArrayList<>();
 
         for (Working working : workings
@@ -97,15 +100,16 @@ public class WorkingServiceImpl implements WorkingService {
         }
         return workingDTOS;
     }
+
     @Override
-    public Page<WorkingDTO> findAdvancesWithPagination(Integer employeeId, Integer page) throws Exception{
+    public Page<WorkingDTO> findAdvancesWithPagination(Integer employeeId, Integer page) throws Exception {
         boolean working = workingRepository.existsByEmployeeId(employeeId);
         Integer pageSize = 5;
-        if(working){
-            Page<Working> listOfWorking = workingRepository.findAllByEmployeeId(employeeId, PageRequest.of(page, pageSize));
-            return listOfWorking.map(workingItem -> mapper.map(workingItem,WorkingDTO.class));
+        if (working) {
+            Page<Working> listOfWorking = workingRepository.findAllByEmployeeIdOrderByDateAsc(employeeId, PageRequest.of(page, pageSize));
+            return listOfWorking.map(workingItem -> mapper.map(workingItem, WorkingDTO.class));
         }
-        throw new Exception("Employee NOT_FOUND!");
+        throw new Exception("Working NOT_FOUND!");
     }
 
 

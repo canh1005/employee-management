@@ -21,16 +21,18 @@ public interface WorkingRepository extends JpaRepository<Working, Integer> {
 
     boolean existsByEmployeeId(Integer employeeId);
 
+    boolean existsByDateAndEmployeeId(Date date, Integer employeeId);
+
     @Transactional
     void deleteByEmployeeId(Integer employeeID);
 
-    List<Working> findByEmployeeId(Integer employeeID);
+    List<Working> findByEmployeeIdOrderByDateAsc(Integer employeeID);
 
     List<Working> findByDate(Date date);
 
-    Page<Working> findAllByEmployeeId(Integer employeeId, Pageable of);
+    Page<Working> findAllByEmployeeIdOrderByDateAsc(Integer employeeId, Pageable of);
 
-    @Query(value = "select COUNT(date) from working where employee_id=?1 and date between ?2 and ?3", nativeQuery = true)
+    @Query(value = "select COUNT(date) from working where employee_id=?1 and Date(date) between ?2 and ?3", nativeQuery = true)
     Integer countDayOfWork(Integer employeeId, LocalDate startDay, LocalDate endDay);
 
     @Query(value = "SELECT sum(hour) * money_per_hour FROM employee_db.working inner join employee_db.employees on working.employee_id = employees.employee_id where working.employee_id=?1 and date between ?2 and ?3 ;", nativeQuery = true)

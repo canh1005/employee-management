@@ -16,9 +16,7 @@ import java.util.Date;
 public class AdvanceDTO {
     private Integer id;
     private Date date;
-    //    private AdvanceID id;
     private Double money;
-    //    private Employee employee;
 
 
     private Integer employeeID;
