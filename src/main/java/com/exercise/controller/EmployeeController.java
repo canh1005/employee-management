@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -63,18 +64,23 @@ public class EmployeeController {
     }
 
     @PostMapping("/create")
-    ResponseEntity<ResponseObject> createNewEmployee(@RequestBody @Valid EmployeeDTO newEmployee) {
+    ResponseEntity<ResponseObject> createNewEmployee(@RequestBody @Valid EmployeeDTO newEmployee, BindingResult bindingResult) {
         logger.info("Inserting ..." + newEmployee);
+        if (bindingResult.hasErrors()) {
 
-        List<Employee> foundEmployees = employeeService.findByPhone(newEmployee.getPhone().trim());
-        try {
-            if (foundEmployees.size() > 0) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject("failed", "Phone already existed!", null));
-            } else {
-                return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ok", "Employee has been insert!", employeeService.saveEmployee(newEmployee)));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject("failed", bindingResult.getAllErrors().get(0).getDefaultMessage(), null));
+
+        } else {
+            List<Employee> foundEmployees = employeeService.findByPhone(newEmployee.getPhone().trim());
+            try {
+                if (foundEmployees.size() > 0) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject("failed", "Phone already existed!", null));
+                } else {
+                    return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ok", "Employee has been insert!", employeeService.saveEmployee(newEmployee)));
+                }
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject("failed", e.getMessage(), null));
             }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject("failed", e.getMessage(), null));
         }
     }
 

@@ -15,6 +15,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 
     List<Employee> findByFullNameContaining(String fullName);
 
+    Page<Employee> findAllByOrderByStartDayDesc(Pageable of);
+
     Page<Employee> findByFullNameContainingOrderByStartDayDesc(String fullName, Pageable of);
 
     @Modifying

@@ -60,7 +60,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Page<EmployeeDTO> findAllEmployeeWithPage(Integer page) {
         Integer pageSize = 5;
-        Page<Employee> pageOfEmployeeEntity = employeeRepository.findAll(PageRequest.of(page, pageSize));
+        Page<Employee> pageOfEmployeeEntity = employeeRepository.findAllByOrderByStartDayDesc(PageRequest.of(page, pageSize));
         return pageOfEmployeeEntity.map(employee -> mapper.map(employee, EmployeeDTO.class));
     }
 
@@ -91,9 +91,9 @@ public class EmployeeServiceImpl implements EmployeeService {
                 logger.info("Deleted advance success....");
             }
             employeeRepository.deleteById(employeeId);
-            return null;
+            return "Delete Success";
         } else {
-            return "Eployee NOT_FOUND!";
+            return "Employee NOT_FOUND!";
         }
     }
 
