@@ -18,6 +18,9 @@ public interface AdvanceRepository extends JpaRepository<Advances, Integer> {
 
     boolean existsByEmployeeId(Integer employeeId);
 
+    @Query(value = "select advance_id,date,sum(money) as money,employee_id from employee_db.advances where employee_id=?1 group by Date(advances.date) order by Date(date) asc", nativeQuery = true)
+    Page<Advances> findAllEmployeeWithPage(Integer employeeId, Pageable of);
+
     List<Advances> findByEmployeeIdOrderByDateAsc(Integer employeeId);
 
     List<Advances> findByDate(Date date);

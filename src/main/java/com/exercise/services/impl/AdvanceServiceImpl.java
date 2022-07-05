@@ -48,15 +48,15 @@ public class AdvanceServiceImpl implements AdvanceService {
         if (employeeEntity.isEmpty()) {
             throw new Exception("Employee is not existed!");
         }
-        if (advanceRepository.existsByDate(newAdvanceDTO.getDate())) {
-            List<Advances> advances = advanceRepository.findByDate(newAdvanceDTO.getDate());
-            for (Advances advance : advances
-            ) {
-                if (advance.getEmployee().getId() == newAdvanceDTO.getEmployeeID()) {
-                    throw new Exception("Advance date is exist!");
-                }
-            }
-        }
+//        if (advanceRepository.existsByDate(newAdvanceDTO.getDate())) {
+//            List<Advances> advances = advanceRepository.findByDate(newAdvanceDTO.getDate());
+//            for (Advances advance : advances
+//            ) {
+//                if (advance.getEmployee().getId() == newAdvanceDTO.getEmployeeID()) {
+//                    throw new Exception("Advance date is exist!");
+//                }
+//            }
+//        }
         Advances advancesEntity = mapper.map(newAdvanceDTO, Advances.class);
         logger.info("advanceEntity" + advancesEntity);
         advanceRepository.save(advancesEntity);
@@ -90,7 +90,7 @@ public class AdvanceServiceImpl implements AdvanceService {
         boolean advance = advanceRepository.existsByEmployeeId(employeeId);
         Integer pageSize = 5;
         if (advance) {
-            Page<Advances> listOfAdvances = advanceRepository.findAllByEmployeeIdOrderByDateAsc(employeeId, PageRequest.of(page, pageSize));
+            Page<Advances> listOfAdvances = advanceRepository.findAllEmployeeWithPage(employeeId, PageRequest.of(page, pageSize));
             return listOfAdvances.map(advances -> mapper.map(advances, AdvanceDTO.class));
         }
         throw new Exception("Employee NOT_FOUND!");

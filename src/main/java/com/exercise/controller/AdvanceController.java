@@ -7,7 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/advance")
@@ -25,21 +28,26 @@ public class AdvanceController {
             return ResponseEntity.badRequest().body(new ResponseObject("Failed", e.getMessage(), null));
         }
     }
+
     @GetMapping("/getPage")
-    ResponseEntity<ResponseObject> getAllAdvanceWithPagination(@RequestParam(value = "employee_id") Integer id,@RequestParam(value = "page") Integer page) {
+    ResponseEntity<ResponseObject> getAllAdvanceWithPagination(@RequestParam(value = "employee_id") Integer id, @RequestParam(value = "page") Integer page) {
         try {
-            return ResponseEntity.ok().body(new ResponseObject("OK", "Get list advance success!", advanceService.findAdvancesWithPagination(id,page)));
+            return ResponseEntity.ok().body(new ResponseObject("OK", "Get list advance success!", advanceService.findAdvancesWithPagination(id, page)));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ResponseObject("Failed", e.getMessage(), null));
         }
     }
 
     @PostMapping("/create")
-    ResponseEntity<ResponseObject> addNewAdvance(@RequestBody AdvanceDTO advanceDTO) {
-        try {
-            return ResponseEntity.ok().body(new ResponseObject("OK", "Advance has been inserted!", advanceService.addAdvance(advanceDTO)));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ResponseObject("Failed",   e.getMessage(), null));
+    ResponseEntity<ResponseObject> addNewAdvance(@RequestBody @Valid AdvanceDTO advanceDTO, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(new ResponseObject("Failed", bindingResult.getAllErrors().get(0).getDefaultMessage(), null));
+        } else {
+            try {
+                return ResponseEntity.ok().body(new ResponseObject("OK", "Advance has been inserted!", advanceService.addAdvance(advanceDTO)));
+            } catch (Exception e) {
+                return ResponseEntity.badRequest().body(new ResponseObject("Failed", e.getMessage(), null));
+            }
         }
     }
 
@@ -48,7 +56,7 @@ public class AdvanceController {
         try {
             return ResponseEntity.ok().body(new ResponseObject("OK", "Advance has been deleted!", advanceService.deleteAdvance(advanceID)));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ResponseObject("Failed",  e.getMessage(), null));
+            return ResponseEntity.badRequest().body(new ResponseObject("Failed", e.getMessage(), null));
         }
     }
 }

@@ -13,8 +13,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -49,11 +51,15 @@ public class WorkingController {
     }
 
     @PostMapping("/create")
-    ResponseEntity<ResponseObject> createNewWorking(@RequestBody WorkingDTO workingDTO) {
-        try {
-            return ResponseEntity.ok().body(new ResponseObject("Ok", "Get Working Success!", workingService.addWorking(workingDTO)));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ResponseObject("Failed", e.getMessage(), null));
+    ResponseEntity<ResponseObject> createNewWorking(@RequestBody @Valid WorkingDTO workingDTO, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(new ResponseObject("Failed", bindingResult.getAllErrors().get(0).getDefaultMessage(), null));
+        } else {
+            try {
+                return ResponseEntity.ok().body(new ResponseObject("Ok", "Get Working Success!", workingService.addWorking(workingDTO)));
+            } catch (Exception e) {
+                return ResponseEntity.badRequest().body(new ResponseObject("Failed", e.getMessage(), null));
+            }
         }
     }
 

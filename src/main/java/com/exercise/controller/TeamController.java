@@ -6,7 +6,10 @@ import com.exercise.services.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 
 @RestController
@@ -38,11 +41,15 @@ public class TeamController {
     }
 
     @PostMapping("/create")
-    ResponseEntity<ResponseObject> createNewEmployee(@RequestBody TeamDTO newTeamDTO) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Employee has been insert!", teamService.addTeam(newTeamDTO)));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject("Failed", e.getMessage(), null));
+    ResponseEntity<ResponseObject> createNewEmployee(@RequestBody @Valid TeamDTO newTeamDTO, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject("Failed", bindingResult.getAllErrors().get(0).getDefaultMessage(), null));
+        } else {
+            try {
+                return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Employee has been insert!", teamService.addTeam(newTeamDTO)));
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject("Failed", e.getMessage(), null));
+            }
         }
     }
 }

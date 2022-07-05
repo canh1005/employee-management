@@ -31,7 +31,7 @@ public class StatisticServiceImpl implements com.exercise.services.StatisticServ
         LocalDate startOfMonth = month.atDay(01);
         LocalDate endOfMonth = month.atEndOfMonth();
         Integer count = workingRepository.countDayOfWork(employeeId, startOfMonth, endOfMonth);
-        totalGet = workingRepository.totalGet(employeeId, startOfMonth, endOfMonth);
+        totalGet = workingRepository.totalGet(employeeId, startOfMonth, endOfMonth) != null ? workingRepository.totalGet(employeeId, startOfMonth, endOfMonth) : 0.0;
         totalAdvancesMoney = advanceRepository.totalAdvancesMoney(employeeId, startOfMonth, endOfMonth);
         if (totalAdvancesMoney != null) {
             totalSalary = totalGet - totalAdvancesMoney;
@@ -42,7 +42,6 @@ public class StatisticServiceImpl implements com.exercise.services.StatisticServ
         logger.info("month: " + month);
         logger.info("startOfMonth: " + startOfMonth);
         logger.info("endOfMonth: " + endOfMonth);
-
         logger.info("Count: " + count);
         logger.info("totalGet: " + totalGet);
         logger.info("totalAdvancesMoney: " + totalAdvancesMoney);
