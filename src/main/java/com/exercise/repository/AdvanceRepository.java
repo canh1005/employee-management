@@ -29,6 +29,10 @@ public interface AdvanceRepository extends JpaRepository<Advances, Integer> {
 
     @Transactional
     void deleteByEmployeeId(Integer employeeID);
+    @Modifying
+    @Transactional
+    @Query(value = "delete from employee_db.advances where Date(date)=?1 and employee_id=?2", nativeQuery = true)
+    void deleteAdvance(LocalDate date, Integer employeeId);
 
     @Modifying
     @Query(value = "delete from advances where advances.employee_id in ?1", nativeQuery = true)

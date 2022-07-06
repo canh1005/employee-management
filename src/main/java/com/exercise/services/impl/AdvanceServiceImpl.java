@@ -14,8 +14,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Pageable;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,12 +65,12 @@ public class AdvanceServiceImpl implements AdvanceService {
     }
 
     @Override
-    public String deleteAdvance(Integer advanceID) {
-        Optional<Advances> advances = advanceRepository.findById(advanceID);
-        if (advances.isPresent()) {
-            advanceRepository.deleteById(advanceID);
+    public String deleteAdvance(LocalDate date, Integer employeeId) {
+        boolean advances = advanceRepository.existsByEmployeeId(employeeId);
+        if (advances) {
+            advanceRepository.deleteAdvance(date,employeeId);
         } else {
-            return "AdvanceID NOT_FOUND!";
+            return "EmployeeID NOT_FOUND!";
         }
         return null;
     }
@@ -87,13 +88,9 @@ public class AdvanceServiceImpl implements AdvanceService {
 
     @Override
     public Page<AdvanceDTO> findAdvancesWithPagination(Integer employeeId, Integer page) throws Exception {
-        boolean advance = advanceRepository.existsByEmployeeId(employeeId);
         Integer pageSize = 5;
-        if (advance) {
             Page<Advances> listOfAdvances = advanceRepository.findAllEmployeeWithPage(employeeId, PageRequest.of(page, pageSize));
             return listOfAdvances.map(advances -> mapper.map(advances, AdvanceDTO.class));
-        }
-        throw new Exception("Employee NOT_FOUND!");
     }
 
 }

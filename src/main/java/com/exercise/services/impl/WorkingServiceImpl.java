@@ -103,13 +103,9 @@ public class WorkingServiceImpl implements WorkingService {
 
     @Override
     public Page<WorkingDTO> findAdvancesWithPagination(Integer employeeId, Integer page) throws Exception {
-        boolean working = workingRepository.existsByEmployeeId(employeeId);
         Integer pageSize = 5;
-        if (working) {
             Page<Working> listOfWorking = workingRepository.findAllByEmployeeIdOrderByDateAsc(employeeId, PageRequest.of(page, pageSize));
             return listOfWorking.map(workingItem -> mapper.map(workingItem, WorkingDTO.class));
-        }
-        throw new Exception("Working NOT_FOUND!");
     }
 
 
