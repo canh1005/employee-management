@@ -68,6 +68,9 @@ public class WorkingServiceImpl implements WorkingService {
         if (employeeEntity.isEmpty()) {
             throw new Exception("Employee is not existed!");
         }
+        if (employeeEntity.get().getStartDay().after(workingDTO.getDate())) {
+            throw new Exception("Employee working day can not be before employee start day!");
+        }
         if (workingRepository.existsByDate(workingDTO.getDate())) {
             List<Working> workings = workingRepository.findByDate(workingDTO.getDate());
             for (Working working : workings
@@ -104,8 +107,8 @@ public class WorkingServiceImpl implements WorkingService {
     @Override
     public Page<WorkingDTO> findAdvancesWithPagination(Integer employeeId, Integer page) throws Exception {
         Integer pageSize = 5;
-            Page<Working> listOfWorking = workingRepository.findAllByEmployeeIdOrderByDateAsc(employeeId, PageRequest.of(page, pageSize));
-            return listOfWorking.map(workingItem -> mapper.map(workingItem, WorkingDTO.class));
+        Page<Working> listOfWorking = workingRepository.findAllByEmployeeIdOrderByDateAsc(employeeId, PageRequest.of(page, pageSize));
+        return listOfWorking.map(workingItem -> mapper.map(workingItem, WorkingDTO.class));
     }
 
 

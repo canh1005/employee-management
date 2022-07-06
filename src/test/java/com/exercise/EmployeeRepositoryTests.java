@@ -15,7 +15,9 @@ import java.text.ParseException;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Rollback(value = false)
 public class EmployeeRepositoryTests {
-    @Autowired private EmployeeRepository repo;
+    @Autowired
+    private EmployeeRepository repo;
+
     @Test
     public void testAddEmp() throws ParseException {
         Employee emp = new Employee();
@@ -24,7 +26,6 @@ public class EmployeeRepositoryTests {
         emp.setAddress("Ha Noi");
         emp.setMale(false);
         emp.setPhone("01234567");
-        emp.setStartDay("10-10-1997");
         emp.setMoneyPerHour(5.0);
 
         repo.save(emp);
