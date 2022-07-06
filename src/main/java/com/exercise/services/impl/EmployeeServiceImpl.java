@@ -147,18 +147,23 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDTO updateEmployee(EmployeeDTO employeeDTO) throws Exception {
         Optional<Employee> employeeEntity = employeeRepository.findById(employeeDTO.getId());
         if (employeeEntity.isPresent()) {
-            employeeEntity.get().setId(employeeDTO.getId());
-            employeeEntity.get().setPhone(employeeDTO.getPhone());
-            employeeEntity.get().setStartDay(employeeDTO.getStartDay());
-            employeeEntity.get().setAddress(employeeDTO.getAddress());
-            employeeEntity.get().setAge(employeeDTO.getAge());
-            employeeEntity.get().setFullName(employeeDTO.getFullName());
-            employeeEntity.get().setMale(employeeDTO.getMale());
-            employeeEntity.get().setMoneyPerHour(employeeDTO.getMoneyPerHour());
-            Optional<Team> team = teamRepository.findById(employeeDTO.getTeamID());
-            employeeEntity.get().setTeam(team.get());
-            this.save(employeeEntity.get());
-            return employeeDTO;
+            if (employeeEntity.get().getPhone().trim().equals(employeeDTO.getPhone().trim())) {
+                employeeEntity.get().setId(employeeDTO.getId());
+                employeeEntity.get().setPhone(employeeDTO.getPhone());
+                employeeEntity.get().setStartDay(employeeDTO.getStartDay());
+                employeeEntity.get().setAddress(employeeDTO.getAddress());
+                employeeEntity.get().setAge(employeeDTO.getAge());
+                employeeEntity.get().setFullName(employeeDTO.getFullName());
+                employeeEntity.get().setMale(employeeDTO.getMale());
+                employeeEntity.get().setMoneyPerHour(employeeDTO.getMoneyPerHour());
+                Optional<Team> team = teamRepository.findById(employeeDTO.getTeamID());
+                employeeEntity.get().setTeam(team.get());
+                this.save(employeeEntity.get());
+                return employeeDTO;
+            } else {
+                throw new Exception("Phone already exist!");
+            }
+
         } else {
             throw new Exception("Employee not found!" + employeeDTO.getId());
         }
