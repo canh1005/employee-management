@@ -28,6 +28,9 @@ public interface WorkingRepository extends JpaRepository<Working, Integer> {
 
     List<Working> findByEmployeeIdOrderByDateAsc(Integer employeeID);
 
+    @Query(value = "select * from working where working.employee_id in ?1", nativeQuery = true)
+    List<Working> findAllByEmployeeIdWithIds(List<Integer> ids);
+
     List<Working> findByDate(Date date);
 
     Page<Working> findAllByEmployeeIdOrderByDateAsc(Integer employeeId, Pageable of);

@@ -84,9 +84,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         List<Advances> advance = advanceRepository.findByEmployeeIdOrderByDateAsc(employeeId);
         if (employee.isPresent()) {
             logger.info("employee: " + employee.get().getId());
-            if (working.size() > 0 || advance.size() > 0) {
+            if (working.size() > 0) {
                 workingRepository.deleteByEmployeeId(employeeId);
                 logger.info("Deleted working success....");
+            }
+            if (advance.size() > 0) {
                 advanceRepository.deleteByEmployeeId(employeeId);
                 logger.info("Deleted advance success....");
             }
@@ -186,11 +188,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public Integer deleteMultipleEmployees(List<Integer> ids) {
-        List<Working> working = workingRepository.findAllById(ids);
-        List<Advances> advances = advanceRepository.findAllById(ids);
-        if (working.size() > 0 || advances.size() > 0) {
+        List<Working> working = workingRepository.findAllByEmployeeIdWithIds(ids);
+        List<Advances> advances = advanceRepository.findAllByEmployeeIdWithIds(ids);
+        if (working.size() > 0) {
             workingRepository.deleteMultipleEmployeesWithIds(ids);
             logger.info("delete working susscess: ");
+        }
+        if (advances.size() > 0) {
             advanceRepository.deleteMultipleEmployeesWithIds(ids);
             logger.info("delete advances susscess: ");
         }

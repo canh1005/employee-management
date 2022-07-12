@@ -112,11 +112,15 @@ public class EmployeeController {
     }
 
     @PutMapping("/update")
-    ResponseEntity<ResponseObject> updateEmployee(@RequestBody EmployeeDTO employeeDTO) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Employee has been update", employeeService.updateEmployee(employeeDTO)));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject("Failed", e.getMessage(), null));
+    ResponseEntity<ResponseObject> updateEmployee(@RequestBody @Valid EmployeeDTO employeeDTO, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject("failed", bindingResult.getAllErrors().get(0).getDefaultMessage(), null));
+        } else {
+            try {
+                return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Employee has been update", employeeService.updateEmployee(employeeDTO)));
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject("Failed", e.getMessage(), null));
+            }
         }
     }
 

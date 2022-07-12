@@ -68,7 +68,7 @@ public class AdvanceServiceImpl implements AdvanceService {
     public String deleteAdvance(LocalDate date, Integer employeeId) {
         boolean advances = advanceRepository.existsByEmployeeId(employeeId);
         if (advances) {
-            advanceRepository.deleteAdvance(date,employeeId);
+            advanceRepository.deleteAdvance(date, employeeId);
         } else {
             return "EmployeeID NOT_FOUND!";
         }
@@ -89,8 +89,9 @@ public class AdvanceServiceImpl implements AdvanceService {
     @Override
     public Page<AdvanceDTO> findAdvancesWithPagination(Integer employeeId, Integer page) throws Exception {
         Integer pageSize = 5;
-            Page<Advances> listOfAdvances = advanceRepository.findAllEmployeeWithPage(employeeId, PageRequest.of(page, pageSize));
-            return listOfAdvances.map(advances -> mapper.map(advances, AdvanceDTO.class));
+        Page<Advances> listOfAdvances = advanceRepository.findAllEmployeeWithPage(employeeId, PageRequest.of(page, pageSize));
+//        Page<Advances> listOfAdvances = advanceRepository.findAllByEmployeeIdOrderByDateAsc(employeeId, PageRequest.of(page, pageSize));
+        return listOfAdvances.map(advances -> mapper.map(advances, AdvanceDTO.class));
     }
 
 }
