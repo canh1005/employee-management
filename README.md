@@ -6,7 +6,7 @@ Hệ thống quản lý nhà hàng có thể bao gồm các tính năng như sau
     + Tài nguyên (resource): Bao gồm các nguyên liệu, vật tư và thiết bị được sử dụng trong nhà hàng.Người dùng có thể xem, tạo mới,  chỉnh sửa, xóa thông tin chi tiết của tài nguyên như hình ảnh, đơn giá, đơn vị tính, nhà cung cấp, ...
     + Danh mục tài nguyên (resource category): Các tài nguyên được sắp xếp vào các danh mục tài nguyên để dễ tìm kiếm và quản lý . Hai danh mục tài nguyên chính là nguyên liệu và thiết bị
     + Đơn vị và nhóm đơn vị tính (unit group, unit): các đơn vị tính được dùng trong việc quản lý tài nguyên và xuất nhập kho. Được sắp xếp thành các nhóm đơn vị để người dùng dễ tìm kiếm. Ví dụ: 
-     - Unit group: Đơn vị thức uống đóng chai
+      - Unit group: Đơn vị thức uống đóng chai
         + Unit 1: Chai
         + Unit 2: Lon
 
