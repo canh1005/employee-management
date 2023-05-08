@@ -14,9 +14,9 @@ Hệ thống quản lý nhà hàng có thể bao gồm các tính năng như sau
     + Nhập kho (import): nhập 1 tài nguyên mới vào kho hoặc nhập thêm vào 1 tài nguyên đã có sẵn
     + Xuất kho (export): xuất tài nguyên ra khỏi kho
     + Thống kê kho (statistics): cung cấp cho nhà hàng số liệu về tình hình xuất nhập kho của hệ thống (tổng chi phí nhập kho, tổng số lần nhập kho, tổng số lần xuất kho, số lượng tài nguyên còn lại ở các kho). Bên cạnh đó, sẽ có 1 số biểu đồ hỗ trợ cho nhà hàng biết được tình trạng kho của mình theo các đơn vị thời gian khác nhau tháng , quý , năm 
-          Biểu đồ 1: biểu diễn tần suất xuất nhập kho và số tài nguyên còn lại của 1 kho
-          Biểu đồ 2: biểu diễn tình trạng phân bổ các tài nguyên giữa các kho của nhà hàng
-          Biểu đồ 3: biểu diễn giá trị nhập kho trung bình của một tài nguyên cụ thể ở tất cả các kho
+         + Biểu đồ 1: biểu diễn tần suất xuất nhập kho và số tài nguyên còn lại của 1 kho
+         + Biểu đồ 2: biểu diễn tình trạng phân bổ các tài nguyên giữa các kho của nhà hàng
+         + Biểu đồ 3: biểu diễn giá trị nhập kho trung bình của một tài nguyên cụ thể ở tất cả các kho
  
 2. Quản lý nhà hàng (Provider management)
     + Quản lý nhà hàng (provider): quản lý các thông tin của nhà hàng như thời gian hoạt động, địa chỉ, mức giá …
